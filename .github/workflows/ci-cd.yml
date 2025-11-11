@@ -64,11 +64,22 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Tag and Push Docker image to GHCR
+      - name: Tag and Push Docker image to GHCR with Versioning
         run: |
-          # The image name must be lowercase. Your repo name has uppercase letters.
           IMAGE_ID="ghcr.io/${{ github.repository }}"
           IMAGE_ID=$(echo $IMAGE_ID | tr '[:upper:]' '[:lower:]')
           
+          # Use the first 7 characters of the commit SHA as the version tag.
+          VERSION=$(echo "${{ github.sha }}" | cut -c1-7)
+          
+          echo "Pushing image: $IMAGE_ID with tags: latest, $VERSION"
+
+          # Tag with the unique version
+          docker tag nyc-duration-app "$IMAGE_ID:$VERSION"
+          
+          # Tag with 'latest'
           docker tag nyc-duration-app "$IMAGE_ID:latest"
+          
+          # Push both tags
+          docker push "$IMAGE_ID:$VERSION"
           docker push "$IMAGE_ID:latest"

@@ -2,9 +2,6 @@
 
 name: Train
 
-# THIS IS THE CRITICAL PART.
-# This 'on:' block must contain ONLY 'workflow_call:'.
-# Remove any 'push' or 'workflow_dispatch' triggers from this file.
 on:
   workflow_call:
 
